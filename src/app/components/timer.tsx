@@ -7,6 +7,7 @@ function formatNumber(number:number) {
 const Wrapper = styled.div`
   color: white;
   font-size: 100px;
+  line-height: 100px;
   font-weight: bold;
 `;
 

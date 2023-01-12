@@ -3,6 +3,9 @@
   "root": true,
   "ignorePatterns": ["!**/*"],
   "plugins": ["@nrwl/nx"],
+  "rules": {
+    "react-hooks/exhaustive-deps": "off"
+  },
   "overrides": [
     {
       "files": ["*.ts", "*.tsx"],
