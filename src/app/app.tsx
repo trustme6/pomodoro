@@ -2,15 +2,42 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { NextIcon } from './components/icons/NextIcon';
 import { Timer } from './components/timer';
+const TimerMode = {
+  pomodoro: 'pomodoro',
+  break: 'break',
+  longBreak: 'longBreak',
+};
 
-const StyledApp = styled.div<{ isPomodoro: boolean }>`
-  background: ${(props) =>
-    props.isPomodoro ? `rgb(186, 73, 73)` : `rgb(56, 133, 138)`};
+const dick = 'хуй';
+const ass = 'жопа';
+
+/* мой хуй у тебя в жопа
+console.log("мой"+ " " + dick + " "+ "у"+ "тебя в "  + ass);
+console.log(`мой ${dick} у тебя в ${ass}`)*/
+
+const StyledApp = styled.div<{ isPomodoro: boolean; isBreak: boolean }>`
+  background: ${(props) => {
+    return props.isPomodoro
+      ? `rgb(186, 73, 73)`
+      : props.isBreak
+      ? `rgb(56, 133, 138)`
+      : `rgb(57, 112, 151)`;
+  }};
+
   display: flex;
   flex-direction: column;
   align-items: center;
   min-height: 100vh;
   transition: background 300ms ease;
+`;
+const PomodoroCountWrapper = styled.div`
+  color: white;
+  cursor: pointer;
+  user-select: none;
+  display: inline-block;
+  font-size: 16px;
+  opacity: 0.6;
+  margin-bottom: 4px;
 `;
 
 const Wrapper = styled.div`
@@ -82,63 +109,6 @@ const SkipButton = styled.button`
     color: white;
   }
 `;
-const TimerMode = {
-  pomodoro: 'pomodoro',
-  break: 'break',
-  longBreak: 'longBreak',
-};
-
-const initialState = {
-  timerMode: TimerMode.pomodoro,
-  pomodoroCount: 0,
-};
-
-function reducer(state, action) {
-  // if (action.type === 'INCREMENT') {
-  //   return {
-  //     pomodoroCount: state.pomodoroCount + 1,
-  //   };
-  // } else if (action.type === 'INCREMENT_AND_CHANGE') {
-  //   return {
-  //     pomodoroCount: state.pomodoroCount + 1,
-  //     timerMode:
-  //       (state.pomodoroCount + 1) % 4 === 0
-  //         ? TimerMode.longBreak
-  //         : TimerMode.break,
-  //   };
-  // } else if (action.type === 'CHANGE') {
-  //   return {
-  //     pomodoroCount: state.pomodoroCount,
-  //     timerMode:
-  //       state.timerMode === TimerMode.pomodoro
-  //         ? TimerMode.break
-  //         : TimerMode.pomodoro,
-  //   };
-  // } else {
-  //   throw new Error();
-  // }
-
-  switch (action.type) {
-    case 'INCREMENT_AND_CHANGE':
-      return {
-        pomodoroCount: state.pomodoroCount + 1,
-        timerMode:
-          (state.pomodoroCount + 1) % 4 === 0
-            ? TimerMode.longBreak
-            : TimerMode.break,
-      };
-    case 'CHANGE':
-      return {
-        pomodoroCount: state.pomodoroCount,
-        timerMode:
-          state.timerMode === TimerMode.pomodoro
-            ? TimerMode.break
-            : TimerMode.pomodoro,
-      };
-    default:
-      throw new Error();
-  }
-}
 
 export function App() {
   const [{ timerMode, pomodoroCount }, setPomodoroState] = React.useState({
@@ -149,13 +119,6 @@ export function App() {
   const [intervalId, setIntervalId] = React.useState<NodeJS.Timer | undefined>(
     undefined
   );
-  // const [timerMode, setTimerMode] = React.useState(TimerMode.pomodoro);
-  // const [pomodoroCount, setPomodoroCount] = React.useState(0);
-
-  // const[{ timerMode, pomodoroCount }, dispatch] = React.useReducer(
-  // reducer,
-  // initialState
-  // );
 
   const isTimerStarted = intervalId !== undefined;
 
@@ -202,6 +165,18 @@ export function App() {
 
     pauseTimer();
   };
+  function skipPomodoroCount() {
+    const test = 'Do you want to refresh the pomodoro count?';
+    if (confirm(test) === true) {
+      setPomodoroState((state) => {
+        return {
+          pomodoroCount: 0,
+          timerMode: state.timerMode
+         
+        };
+      });
+    } 
+  };
 
   useEffect(() => {
     setSeconds(
@@ -220,7 +195,10 @@ export function App() {
   }, [seconds, isTimerStarted]);
 
   return (
-    <StyledApp isPomodoro={timerMode === TimerMode.pomodoro}>
+    <StyledApp
+      isPomodoro={timerMode === TimerMode.pomodoro}
+      isBreak={timerMode === TimerMode.break}
+    >
       <Wrapper>
         {' '}
         <Timer value={seconds} />
@@ -248,7 +226,9 @@ export function App() {
           )}
         </Buttons>
       </Wrapper>
-      <div>#{pomodoroCount}</div>
+      <PomodoroCountWrapper onClick={() => skipPomodoroCount()}>
+        #{pomodoroCount}
+      </PomodoroCountWrapper>
     </StyledApp>
   );
 }
