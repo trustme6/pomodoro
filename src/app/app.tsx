@@ -7,6 +7,7 @@ const TimerMode = {
   break: 'break',
   longBreak: 'longBreak',
 };
+const myStorage = window.localStorage;
 
 const dick = 'хуй';
 const ass = 'жопа';
@@ -85,6 +86,7 @@ const Button = styled.button<{ isPomodoro: boolean }>`
   height: 55px;
   width: 200px;
 `;
+const pomodoroCountLs = localStorage.getItem('iq');
 
 const StartButton = styled(Button)`
   box-shadow: rgb(235 235 235) 0px 6px 0px;
@@ -112,8 +114,9 @@ const SkipButton = styled.button`
 
 export function App() {
   const [{ timerMode, pomodoroCount }, setPomodoroState] = React.useState({
+
     timerMode: TimerMode.pomodoro,
-    pomodoroCount: 0,
+    pomodoroCount: Number(pomodoroCountLs),
   });
   const [seconds, setSeconds] = React.useState(60 * 25);
   const [intervalId, setIntervalId] = React.useState<NodeJS.Timer | undefined>(
@@ -126,7 +129,7 @@ export function App() {
     if (!isTimerStarted) {
       const newIntervalId = setInterval(
         () => setSeconds((value) => value - 1),
-        1000
+        10
       );
 
       setIntervalId(newIntervalId);
@@ -140,6 +143,9 @@ export function App() {
 
   const skipTimer = () => {
     if (timerMode === TimerMode.pomodoro) {
+      myStorage.setItem('iq',`${pomodoroCount + 1}` );
+
+
       setPomodoroState((state) => {
         return {
           pomodoroCount: state.pomodoroCount + 1,
@@ -149,9 +155,7 @@ export function App() {
               : TimerMode.break,
         };
       });
-      // dispatch({type: "INCREMENT_AND_CHANGE"})
     } else {
-      // dispatch({type: "CHANGE"});
       setPomodoroState((state) => {
         return {
           pomodoroCount: state.pomodoroCount,
@@ -167,15 +171,17 @@ export function App() {
   };
   function skipPomodoroCount() {
     const test = 'Do you want to refresh the pomodoro count?';
-    if (confirm(test) === true) {
+    if (confirm(test)) {
+      myStorage.setItem('iq',`0` );
+
       setPomodoroState((state) => {
         return {
           pomodoroCount: 0,
           timerMode: state.timerMode
-         
+
         };
       });
-    } 
+    }
   };
 
   useEffect(() => {
