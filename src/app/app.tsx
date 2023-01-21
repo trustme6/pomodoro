@@ -38,6 +38,10 @@ const PomodoroCountWrapper = styled.div`
   font-size: 16px;
   opacity: 0.6;
   margin-bottom: 4px;
+
+  :hover {
+    opacity: 1;
+  }
 `;
 
 const Wrapper = styled.div`
@@ -84,6 +88,10 @@ const Button = styled.button<{ isPomodoro: boolean }>`
   text-transform: uppercase;
   height: 55px;
   width: 200px;
+
+  :focus {
+    border: 2px solid green;
+  }
 `;
 
 const StartButton = styled(Button)`
@@ -171,12 +179,11 @@ export function App() {
       setPomodoroState((state) => {
         return {
           pomodoroCount: 0,
-          timerMode: state.timerMode
-         
+          timerMode: state.timerMode,
         };
       });
-    } 
-  };
+    }
+  }
 
   useEffect(() => {
     setSeconds(
@@ -193,6 +200,24 @@ export function App() {
       skipTimer();
     }
   }, [seconds, isTimerStarted]);
+
+  useEffect(() => {
+    function keyDown(event) {
+      if (event.code === 'Enter') {
+        if (isTimerStarted) {
+          pauseTimer();
+        } else if (!isTimerStarted) {
+          startTimer();
+        }
+      }
+    }
+
+    document.addEventListener('keydown', keyDown);
+
+    return () => {
+      document.removeEventListener('keydown', keyDown);
+    };
+  }, [isTimerStarted]);
 
   return (
     <StyledApp
