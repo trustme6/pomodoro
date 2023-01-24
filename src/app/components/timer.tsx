@@ -11,9 +11,9 @@ const Wrapper = styled.div`
   font-weight: bold;
 `;
 
-export function Timer({ value }: { value: number }) {
-  const minutes = formatNumber(parseInt(`${value / 60}`));
-  const seconds = formatNumber(value % 60);
+export function Timer(props: { value: number }) {
+  const minutes = formatNumber(parseInt(`${props.value / 60}`));
+  const seconds = formatNumber(props.value % 60);
 
   return (
     <Wrapper>

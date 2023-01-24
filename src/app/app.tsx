@@ -1,20 +1,13 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
-import { NextIcon } from './components/icons/NextIcon';
+import { Buttons } from './components/Buttons';
 import { Timer } from './components/timer';
-const TimerMode = {
+export const TimerMode = {
   pomodoro: 'pomodoro',
   break: 'break',
   longBreak: 'longBreak',
 };
 const myStorage = window.localStorage;
-
-const dick = 'хуй';
-const ass = 'жопа';
-
-/* мой хуй у тебя в жопа
-console.log("мой"+ " " + dick + " "+ "у"+ "тебя в "  + ass);
-console.log(`мой ${dick} у тебя в ${ass}`)*/
 
 const StyledApp = styled.div<{ isPomodoro: boolean; isBreak: boolean }>`
   background: ${(props) => {
@@ -65,64 +58,10 @@ const Wrapper = styled.div`
   width: 400px;
 `;
 
-const Buttons = styled.div`
-  position: relative;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-`;
-const Button = styled.button<{ isPomodoro: boolean }>`
-  cursor: pointer;
-  border: none;
-  margin: 20px 0px 0px;
-  padding: 0px 12px;
-  border-radius: 4px;
-  font-size: 22px;
-  font-family: 'ArialRounded', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-    'Segoe UI Symbol';
-  color: ${(props) =>
-    props.isPomodoro ? `rgb(186, 73, 73)` : `rgb(56, 133, 138)`};
-  font-weight: bold;
-  background-color: white;
-  transition: color 0.5s ease-in-out 0s;
-  text-transform: uppercase;
-  height: 55px;
-  width: 200px;
-
-  :focus {
-    border: 2px solid green;
-  }
-`;
 const pomodoroCountLs = localStorage.getItem('iq');
-
-const StartButton = styled(Button)`
-  box-shadow: rgb(235 235 235) 0px 6px 0px;
-`;
-const PauseButton = styled(Button)`
-  margin-top: 20px;
-  transition: transform, 300ms, ease;
-  transform: translate3d(0px, 6px, 0px);
-`;
-const SkipButton = styled.button`
-  position: absolute;
-  background: none;
-  right: 20px;
-  height: 55px;
-  margin-top: 26px;
-  border: none;
-  font-weight: bold;
-  font-size: 22px;
-  cursor: pointer;
-
-  svg {
-    color: white;
-  }
-`;
 
 export function App() {
   const [{ timerMode, pomodoroCount }, setPomodoroState] = React.useState({
-
     timerMode: TimerMode.pomodoro,
     pomodoroCount: Number(pomodoroCountLs),
   });
@@ -151,8 +90,7 @@ export function App() {
 
   const skipTimer = () => {
     if (timerMode === TimerMode.pomodoro) {
-      myStorage.setItem('iq',`${pomodoroCount + 1}` );
-
+      myStorage.setItem('iq', `${pomodoroCount + 1}`);
 
       setPomodoroState((state) => {
         return {
@@ -177,20 +115,19 @@ export function App() {
 
     pauseTimer();
   };
-  function skipPomodoroCount() {
+  const skipPomodoroCount = () => {
     const test = 'Do you want to refresh the pomodoro count?';
     if (confirm(test)) {
-      myStorage.setItem('iq',`0` );
+      myStorage.setItem('iq', `0`);
 
       setPomodoroState((state) => {
         return {
           pomodoroCount: 0,
-          timerMode: state.timerMode
-
+          timerMode: state.timerMode,
         };
       });
     }
-  };
+  }
 
   useEffect(() => {
     setSeconds(
@@ -232,31 +169,14 @@ export function App() {
       isBreak={timerMode === TimerMode.break}
     >
       <Wrapper>
-        {' '}
         <Timer value={seconds} />
-        <Buttons>
-          {isTimerStarted ? (
-            <PauseButton
-              isPomodoro={timerMode === TimerMode.pomodoro}
-              onClick={() => pauseTimer()}
-            >
-              pause
-            </PauseButton>
-          ) : (
-            <StartButton
-              isPomodoro={timerMode === TimerMode.pomodoro}
-              onClick={() => startTimer()}
-            >
-              start{' '}
-            </StartButton>
-          )}
-
-          {isTimerStarted && (
-            <SkipButton onClick={() => skipTimer()}>
-              <NextIcon />
-            </SkipButton>
-          )}
-        </Buttons>
+        <Buttons
+          isTimerStarted={isTimerStarted}
+          startTimer={startTimer}
+          pauseTimer={pauseTimer}
+          skipTimer={skipTimer}
+          isPomodoro={timerMode === TimerMode.pomodoro}
+        />
       </Wrapper>
       <PomodoroCountWrapper onClick={() => skipPomodoroCount()}>
         #{pomodoroCount}
