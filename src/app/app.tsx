@@ -2,14 +2,19 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { Buttons } from './components/Buttons';
 import { Timer } from './components/timer';
-export const TimerMode = {
-  pomodoro: 'pomodoro',
-  break: 'break',
-  longBreak: 'longBreak',
+
+export enum ETimerMode {
+  pomodoro = 'pomodoro',
+  break = 'break',
+  longBreak = 'longBreak',
 };
+
 const myStorage = window.localStorage;
 
-const StyledApp = styled.div<{ isPomodoro: boolean; isBreak: boolean }>`
+const StyledApp = styled.div<{
+  isPomodoro: boolean;
+  isBreak: boolean;
+}>`
   background: ${(props) => {
     return props.isPomodoro
       ? `rgb(186, 73, 73)`
@@ -58,13 +63,23 @@ const Wrapper = styled.div`
   width: 400px;
 `;
 
+const TimerModeButton = styled.button<{ isActive: boolean }>`
+  background: ${(p) => (p.isActive ? 'red' : 'blue')};
+  display: flex;
+  text-align: center;
+  font-size: 11px;
+  padding: 2px 12px;
+  height: 28px;
+  cursor: pointer;
+`;
+
 const pomodoroCountLs = localStorage.getItem('iq');
 
 export function App() {
-  const [{ timerMode, pomodoroCount }, setPomodoroState] = React.useState({
-    timerMode: TimerMode.pomodoro,
-    pomodoroCount: Number(pomodoroCountLs),
-  });
+  const [timerMode, setTimerMode] = React.useState(ETimerMode.pomodoro);
+  const [pomodoroCount, setPomodoroCount] = React.useState(
+    Number(pomodoroCountLs)
+  );
   const [seconds, setSeconds] = React.useState(60 * 25);
   const [intervalId, setIntervalId] = React.useState<NodeJS.Timer | undefined>(
     undefined
@@ -89,51 +104,48 @@ export function App() {
   };
 
   const skipTimer = () => {
-    if (timerMode === TimerMode.pomodoro) {
+    if (timerMode === ETimerMode.pomodoro) {
       myStorage.setItem('iq', `${pomodoroCount + 1}`);
 
-      setPomodoroState((state) => {
-        return {
-          pomodoroCount: state.pomodoroCount + 1,
-          timerMode:
-            (state.pomodoroCount + 1) % 4 === 0
-              ? TimerMode.longBreak
-              : TimerMode.break,
-        };
-      });
+      const nextPomodoroCount = pomodoroCount + 1;
+
+      setPomodoroCount(nextPomodoroCount);
+      setTimerMode(
+        nextPomodoroCount % 4 === 0 ? ETimerMode.longBreak : ETimerMode.break
+      );
     } else {
-      setPomodoroState((state) => {
-        return {
-          pomodoroCount: state.pomodoroCount,
-          timerMode:
-            state.timerMode === TimerMode.pomodoro
-              ? TimerMode.break
-              : TimerMode.pomodoro,
-        };
-      });
+      setTimerMode(ETimerMode.break);
     }
 
     pauseTimer();
   };
+
   const skipPomodoroCount = () => {
     const test = 'Do you want to refresh the pomodoro count?';
     if (confirm(test)) {
       myStorage.setItem('iq', `0`);
 
-      setPomodoroState((state) => {
-        return {
-          pomodoroCount: 0,
-          timerMode: state.timerMode,
-        };
-      });
+      setPomodoroCount(0);
     }
-  }
+  };
+
+  const validateAndSetTimerMode = (mode: ETimerMode) => {
+    if (isTimerStarted) {
+      if (confirm('ty durak?')) {
+        setTimerMode(mode);
+        pauseTimer();
+      }
+    } else {
+      setTimerMode(mode);
+    }
+  };
+  validateAndSetTimerMode('pidor')
 
   useEffect(() => {
     setSeconds(
-      timerMode === TimerMode.pomodoro
+      timerMode === ETimerMode.pomodoro
         ? 60 * 25
-        : timerMode === TimerMode.longBreak
+        : timerMode === ETimerMode.longBreak
         ? 60 * 15
         : 60 * 5
     );
@@ -146,7 +158,7 @@ export function App() {
   }, [seconds, isTimerStarted]);
 
   useEffect(() => {
-    function keyDown(event) {
+    function keyDown(event: KeyboardEvent) {
       if (event.code === 'Enter') {
         if (isTimerStarted) {
           pauseTimer();
@@ -165,17 +177,41 @@ export function App() {
 
   return (
     <StyledApp
-      isPomodoro={timerMode === TimerMode.pomodoro}
-      isBreak={timerMode === TimerMode.break}
+      isPomodoro={timerMode === ETimerMode.pomodoro}
+      isBreak={timerMode === ETimerMode.break}
     >
       <Wrapper>
+        <div
+          style={{
+            display: 'flex',
+          }}
+        >
+          <TimerModeButton
+            isActive={timerMode === ETimerMode.pomodoro}
+            onClick={() => validateAndSetTimerMode(ETimerMode.pomodoro)}
+          >
+            Pomodoro
+          </TimerModeButton>
+          <TimerModeButton
+            isActive={timerMode === ETimerMode.break}
+            onClick={() => validateAndSetTimerMode(ETimerMode.break)}
+          >
+            Short break
+          </TimerModeButton>
+          <TimerModeButton
+            isActive={timerMode === ETimerMode.longBreak}
+            onClick={() => validateAndSetTimerMode(ETimerMode.longBreak)}
+          >
+            Long break
+          </TimerModeButton>
+        </div>
         <Timer value={seconds} />
         <Buttons
           isTimerStarted={isTimerStarted}
           startTimer={startTimer}
           pauseTimer={pauseTimer}
           skipTimer={skipTimer}
-          isPomodoro={timerMode === TimerMode.pomodoro}
+          isPomodoro={timerMode === ETimerMode.pomodoro}
         />
       </Wrapper>
       <PomodoroCountWrapper onClick={() => skipPomodoroCount()}>

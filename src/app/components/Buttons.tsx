@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { TimerMode } from '../app';
 import { NextIcon } from './icons/NextIcon';
 
 const SkipButton = styled.button`
@@ -76,7 +77,7 @@ export const Buttons: React.FC<IProps> = ({
 }) => {
   return (
     <Wrapper>
-      {isTimerStarted ? (
+{isTimerStarted ? (
         <PauseButton isPomodoro={isPomodoro} onClick={() => pauseTimer()}>
           pause
         </PauseButton>
