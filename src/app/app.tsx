@@ -64,13 +64,21 @@ const Wrapper = styled.div`
 `;
 
 const TimerModeButton = styled.button<{ isActive: boolean }>`
-  background: ${(p) => (p.isActive ? 'red' : 'blue')};
+  background: ${(p) => (p.isActive ? "rgba(0, 0, 0, 0.15)" : 'transparent')};
   display: flex;
   text-align: center;
-  font-size: 11px;
-  padding: 2px 12px;
-  height: 28px;
+  font-size: 16px;
+  padding: 5px 12px; 
   cursor: pointer;
+font-weight:${(p) => (p.isActive ? 'bold' : '300')};
+border: none;
+color: white;
+border-radius: 4px;
+:active {
+  transform: translateY(2px);
+  }
+
+
 `;
 
 const pomodoroCountLs = localStorage.getItem('iq');
@@ -139,7 +147,6 @@ export function App() {
       setTimerMode(mode);
     }
   };
-  validateAndSetTimerMode('pidor')
 
   useEffect(() => {
     setSeconds(
@@ -184,6 +191,7 @@ export function App() {
         <div
           style={{
             display: 'flex',
+            marginBottom: "20px",
           }}
         >
           <TimerModeButton
@@ -196,13 +204,13 @@ export function App() {
             isActive={timerMode === ETimerMode.break}
             onClick={() => validateAndSetTimerMode(ETimerMode.break)}
           >
-            Short break
+            Short Break
           </TimerModeButton>
           <TimerModeButton
             isActive={timerMode === ETimerMode.longBreak}
             onClick={() => validateAndSetTimerMode(ETimerMode.longBreak)}
           >
-            Long break
+            Long Break
           </TimerModeButton>
         </div>
         <Timer value={seconds} />

@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { TimerMode } from '../app';
 import { NextIcon } from './icons/NextIcon';
 
 const SkipButton = styled.button`
