@@ -67,6 +67,8 @@ interface IProps {
   isTimerStarted: boolean;
 }
 
+
+
 export const Buttons: React.FC<IProps> = ({
   isPomodoro,
   pauseTimer,

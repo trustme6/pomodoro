@@ -49,3 +49,62 @@ const App = () => {
 }
 
 
+interface ICharacteristic {
+    attack: number;
+    health: number;
+}
+
+interface IHero {
+    name: string;
+    surname: string;
+    isAvenger: boolean;
+    characteristic: ICharacteristic;
+}
+
+const hero: IHero = {
+    name: "tony",
+    surname: "stark",
+    isAvenger: true,
+    characteristic: {
+        attack: 10,
+        health: 10
+    }
+};
+
+
+const heroes: Array<IHero> = [{
+    name: "tony",
+    surname: "stark",
+    isAvenger: true,
+    characteristic: {
+        attack: 10,
+        health: 10
+    }
+}, {
+    name: "hulk",
+    surname: "-",
+    isAvenger: true,
+    characteristic: {
+        attack: 20,
+        health: 20
+    }
+}, {
+    name: "peter",
+    surname: "parker",
+    isAvenger: true,
+    characteristic: {
+        attack: 10,
+        health: 15
+    }
+}];
+
+const numbers = [10,2, 1];
+
+
+const showHeroes = (dasdas: Array<IHero>) => {
+    dasdas.forEach(element => {
+    console.log(element);
+  });  
+};
+
+showHeroes(heroes);
