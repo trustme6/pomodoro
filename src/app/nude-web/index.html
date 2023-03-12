@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Пример веб-страницы</title>
+  </head>
+  <body>
+    <h1>Weather forecast</h1>
+    <div>
+      Today weather.
+      <button onclick="getTodayWeather()">Refresh</button>
+    </div>
+
+    <div id="weather-today"></div>
+    <div>
+      Tomorrow weather.
+      <button onclick="getTomorrowWeather()">Refresh</button>
+    </div>
+
+    <div id="weather-tomorrow"></div>
+    <div>
+      Seven's day weather.
+      <button onclick="getSevenWeather()">Refresh</button>
+    </div>
+
+    <div id="weather-seven"></div>
+
+    <script type="text/javascript" src="main.js"></script>
+  </body>
+</html>
